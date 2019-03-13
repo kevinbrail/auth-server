@@ -7,6 +7,11 @@ function tokenForUser(user) {
     return jwt.encode({ sub: user.id, iat: timestamp }, config.secret);
 }
 
+exports.signin = function(req, res, next) {
+    res.send({ token: tokenForUser(req.user) });  
+    console.log('signing in')
+}
+
 exports.signup = function(req, res, next) {
     //see if user email exists
     const email = req.body.email;
@@ -27,6 +32,8 @@ exports.signup = function(req, res, next) {
         });
         user.save(function(err) {
             if (err) {return next(err); }
+
+            //response when user is successfully created
             res.json({ token: tokenForUser(user)});
         });
     })
